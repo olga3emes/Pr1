@@ -8,7 +8,7 @@ import java.sql.*;
 public class MySQLClient {
 
 
-    private final static int NUM_COLUMNS = 310;
+    private final static int NUM_COLUMNS = 30;
     private final static int NUM_ROWS = 20;
 
     private final static String jdbcDriver = "com.mysql.jdbc.Driver";
@@ -27,12 +27,17 @@ public class MySQLClient {
 
     }
 
-    public static void addRecord(Statement statement, String tableName, int row, String column, int value) throws SQLException{
+    public static void addRecord(Statement statement, String tableName) throws SQLException{
 
-        String addcolum = "ALTER TABLE " + tableName + " ADD if not exists " + column + " VARCHAR(30)";
-        statement.executeUpdate(addcolum);
-        String insert = "INSERT INTO " +tableName+ "(ID,"+column+") VALUES ("+row+","+ value +") ON DUPLICATE KEY UPDATE "+column+"="+value ;
-        statement.executeUpdate(insert);
+                for(int i = 0;i<= NUM_COLUMNS;i++) {
+                String addcolum = "ALTER TABLE " + tableName + " ADD " + "col"+i+ " VARCHAR(30)";
+                statement.executeUpdate(addcolum);
+                for (int j = 0; j <= NUM_ROWS; j++) {
+                int value=i+j;
+                String insert = "INSERT INTO " +tableName+ "(ID, col"+i+") VALUES ("+j+","+ value+") ON DUPLICATE KEY UPDATE col"+i+"="+value;
+                statement.executeUpdate(insert);
+            }
+        }
     }
 
 
@@ -124,12 +129,7 @@ public class MySQLClient {
 
             System.out.println("INSERT RECORDS____________________");
             startTime = System.currentTimeMillis();
-            for(int i = 0;i<NUM_COLUMNS;i++) {
-                for (int j = 0; j < NUM_ROWS; j++) {
-                    MySQLClient.addRecord(statement, tablename, j, "col" + i, (i + j));
-
-                }
-            }
+            MySQLClient.addRecord(statement, tablename);
             stopTime = System.currentTimeMillis();
             System.out.println("INSERT RECORDS TIME_____________________");
             System.out.println(( stopTime - startTime ) +" ms");
@@ -145,7 +145,7 @@ public class MySQLClient {
             System.out.println(( stopTime - startTime ) +" ms");
             System.out.println("__________________________________/n");
 
-
+/*
             System.out.println("GET AVERAGE COLUMN 300_________________");
             startTime = System.currentTimeMillis();
             double average=MySQLClient.getAverage(statement,tablename, "col300");
@@ -163,7 +163,7 @@ public class MySQLClient {
             stopTime = System.currentTimeMillis();
             System.out.println("GET AVERAGE TIME_____________");
             System.out.println(( stopTime - startTime ) +" ms");
-            System.out.println("__________________________________");
+            System.out.println("__________________________________");*/
 
 
             System.out.println("DELETE ODD RECORDS_________________");
