@@ -47,6 +47,7 @@ public class HBaseClient {
      */
     static {
         conf = HBaseConfiguration.create();
+
     }
 
     /*
