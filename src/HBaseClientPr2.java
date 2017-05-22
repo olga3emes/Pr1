@@ -1,31 +1,14 @@
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.*;
+import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.util.Bytes;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.KeyValue;
-import org.apache.hadoop.hbase.MasterNotRunningException;
-import org.apache.hadoop.hbase.ZooKeeperConnectionException;
-import org.apache.hadoop.hbase.client.Delete;
-import org.apache.hadoop.hbase.client.Get;
-import org.apache.hadoop.hbase.client.HBaseAdmin;
-import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.client.Put;
-import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.ResultScanner;
-import org.apache.hadoop.hbase.client.Scan;
-import org.apache.hadoop.hbase.client.coprocessor.AggregationClient;
-import org.apache.hadoop.hbase.client.coprocessor.LongColumnInterpreter;
-import org.apache.hadoop.hbase.coprocessor.ColumnInterpreter;
-import org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.EmptyMsg;
-import org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.LongMsg;
-import org.apache.hadoop.hbase.util.Bytes;
-
-public class HBaseClient {
+public class HBaseClientPr2 {
 
 	/*
 	 * We have to use DAO
@@ -35,15 +18,8 @@ public class HBaseClient {
     //The number of columns specified
     private final static int NUM_COLUMNS = 1000;
 
-
-    //(interval between 100 and 700 this parameters are going to generate better results)
-    static Random r = new Random();
-    static int low = 100;
-    static int high = 700;
-    static int result = r.nextInt(high-low) + low;
-
     //Random number of rows
-    private final static int NUM_ROWS = result;
+    private final static int NUM_ROWS = 500;
 
     private static Configuration conf = null;
 
@@ -200,7 +176,7 @@ public class HBaseClient {
 
             System.out.println("CREATE TABLE____________");
             startTime = System.currentTimeMillis();
-            HBaseClient.createTable(tablename, family);
+            HBaseClientPr2.createTable(tablename, family);
             stopTime = System.currentTimeMillis();
             System.out.println("CREATE TABLE TIME_____________");
             System.out.println(( stopTime - startTime ) +" ms");
@@ -213,7 +189,7 @@ public class HBaseClient {
             HTable table = new HTable(conf, tablename);
             for (int i = 0; i < NUM_COLUMNS; i++) {
                 for (int j = 0; j < NUM_ROWS; j++) {
-                    HBaseClient.addRecord(table, "row" + j, family[0], "col" + i, (i + j) + "");
+                    HBaseClientPr2.addRecord(table, "row" + j, family[0], "col" + i, (i + j) + "");
                 }
             }
             stopTime = System.currentTimeMillis();
@@ -225,7 +201,7 @@ public class HBaseClient {
 
             System.out.println("SHOW ALL RECORDS__________________");
             startTime = System.currentTimeMillis();
-            HBaseClient.getAllRecord(table);
+            HBaseClientPr2.getAllRecord(table);
             stopTime = System.currentTimeMillis();
             System.out.println("SHOW ALL RECORDS TIME_____________");
             System.out.println(( stopTime - startTime ) +" ms");
@@ -234,7 +210,7 @@ public class HBaseClient {
 
             System.out.println("GET AVERAGE COLUMN 300_________________");
             startTime = System.currentTimeMillis();
-            double average = HBaseClient.getAverage(table, family[0], "col3");
+            double average = HBaseClientPr2.getAverage(table, family[0], "col3");
             System.out.println("AVG: " + average + "_________________");
             stopTime = System.currentTimeMillis();
             System.out.println("GET AVERAGE TIME_____________");
@@ -244,7 +220,7 @@ public class HBaseClient {
 
             System.out.println("GET AVERAGE COLUMN 700_________________");
             startTime = System.currentTimeMillis();
-            average = HBaseClient.getAverage(table, family[0], "col7");
+            average = HBaseClientPr2.getAverage(table, family[0], "col7");
             System.out.println("AVG: " + average + "_________________");
             stopTime = System.currentTimeMillis();
             System.out.println("GET AVERAGE TIME_____________");
@@ -254,7 +230,7 @@ public class HBaseClient {
 
             System.out.println("DELETE ODD RECORDS_________________");
             startTime = System.currentTimeMillis();
-            HBaseClient.delOddRecords(table);
+            HBaseClientPr2.delOddRecords(table);
             stopTime = System.currentTimeMillis();
             System.out.println("DELETE ODD RECORDS TIME_______________");
             System.out.println(( stopTime - startTime ) +" ms");
@@ -263,7 +239,7 @@ public class HBaseClient {
 
             System.out.println("SHOW ALL RECORDS_________________");
             startTime = System.currentTimeMillis();
-            HBaseClient.getAllRecord(table);
+            HBaseClientPr2.getAllRecord(table);
             stopTime = System.currentTimeMillis();
             System.out.println("SHOW ALL RECORDS TIME_______________");
             System.out.println(( stopTime - startTime ) +" ms");
@@ -273,7 +249,7 @@ public class HBaseClient {
 
             System.out.println("DELETE TABLE___________");
             startTime = System.currentTimeMillis();
-            HBaseClient.deleteTable(tablename);
+            HBaseClientPr2.deleteTable(tablename);
             stopTime = System.currentTimeMillis();
             System.out.println("DELETE TABLE TIME________________");
             System.out.println(( stopTime - startTime ) +" ms");
